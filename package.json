@@ -1,8 +1,9 @@
 {
-  "name": "dhl-node",
+  "name": "@kronsi/dhl",
   "version": "2.0.0",
-  "description": "MyDHL API node.js client",
+  "description": "A library for using the DHL Express API",
   "type": "module",
+  "private": false,
   "exports": "./index.js",
   "engines": {
     "node": ">=14.16"
@@ -10,21 +11,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mondalaci/dhl-node.git"
-  },
   "keywords": [
     "dhl",
     "node",
     "webservice"
   ],
-  "author": "Laszlo Monda",
+  "homepage": "https://github.com/kronsi/dhl-lib",
+  "author": "Sven Kronshage <sven@kronsi.com>, Laszlo Monda",
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/mondalaci/dhl-node/issues"
   },
-  "homepage": "https://github.com/mondalaci/dhl-node#readme",
   "dependencies": {
     "country-data": "0.0.31",
     "soap": "^0.29.0",

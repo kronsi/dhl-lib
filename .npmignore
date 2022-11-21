@@ -1,0 +1,5 @@
+.git
+./test.js
+*.xml
+*.pdf
+package-lock.json

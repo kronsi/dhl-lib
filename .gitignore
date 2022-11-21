@@ -2,3 +2,7 @@ node_modules
 auth.js
 *.xml
 *.pdf
+./test.js
+test.js
+.DS_Store
+package-lock.json
