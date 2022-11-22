@@ -11,15 +11,19 @@ library to track, rate, ship or pickup something via DHL Express
 
 ```js
 
-import fs from 'node:fs';
-import format from 'xml-formatter';
-import {getIsoDateTimeGmt, testRateRequest, testShipmentRequest, testRequestPickup} from './index.js';
+var fs = require('fs');
+var format = require("xml-formatter");
+var dhlLib = require("./index.js");
 
 const auth = {
     username: 'your username',
     password: 'your pw',
     accountNumber: 000000000,
 }
+
+const debug = true;
+var dhl = new dhlLib(auth, debug);
+
 
 //rate request
 const reqRate = {
@@ -65,10 +69,13 @@ const reqRate = {
     },
 };
 
-const resRate = await testRateRequest(auth, reqRate);
-console.log(JSON.stringify(resRate, null, 4));
-fs.writeFileSync('rateRequest.response.xml', resRate.responseXml);
-fs.writeFileSync('rateRequest.request.xml', format(resRate.requestXml));
+dhl.rateRequest(reqRate).then((resRate) => {
+    console.log(JSON.stringify(resRate, null, 4));
+    fs.writeFileSync('rateRequest.response.xml', resRate.responseXml);
+    fs.writeFileSync('rateRequest.request.xml', format(resRate.requestXml));
+
+})
+
 
 //shipment request
 const reqShipment = {
@@ -147,12 +154,18 @@ const reqShipment = {
     },
 };
 
-const resShipment = await testShipmentRequest(auth, reqShipment);
-console.log(JSON.stringify(resShipment.response, null, 4));
-fs.writeFileSync('shipmentRequest.request.xml', format(resShipment.requestXml));
-fs.writeFileSync('shipmentRequest.response.xml', resShipment.responseXml);
-const graphicImage = Buffer.from(resShipment.response.LabelImage.GraphicImage, 'base64');
-fs.writeFileSync('shipmentRequest.response.pdf', graphicImage);
+dhl.shipmentRequest(reqShipment).then((resShipment) => {
+    console.log(JSON.stringify(resShipment.response, null, 4));
+    fs.writeFileSync('shipmentRequest.request.xml', format(resShipment.requestXml));
+    fs.writeFileSync('shipmentRequest.response.xml', resShipment.responseXml);
+    try {
+    const graphicImage = Buffer.from(resShipment.response.LabelImage.GraphicImage, 'base64');
+    fs.writeFileSync('shipmentRequest.response.pdf', graphicImage);
+    }
+    catch(e){
+        console.log(e);
+    }
+})
 
 
 //pickup
@@ -219,10 +232,13 @@ const reqPickup = {
     },
 };
 
-const resPickup = await testRequestPickup(auth, reqPickup);
-console.log(JSON.stringify(resPickup.response, null, 4));
-fs.writeFileSync('requestPickup.request.xml', format(resPickup.requestXml));
-fs.writeFileSync('requestPickup.response.xml', resPickup.responseXml);
+
+dhl.requestPickup(reqPickup).then((resPickup) => {
+    console.log(JSON.stringify(resPickup.response, null, 4));
+    fs.writeFileSync('requestPickup.request.xml', format(resPickup.requestXml));
+    fs.writeFileSync('requestPickup.response.xml', resPickup.responseXml);
+
+});
 
 ```
 
