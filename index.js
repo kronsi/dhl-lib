@@ -111,7 +111,6 @@ class DHL {
     };
 
     uploadImage(docRequest, shipmentId){
-        const raw = JSON.stringify(docRequest);        
         const url = `${this.restUrl}/shipments/${shipmentId}/upload-image`;
         const config = {
             headers: {
