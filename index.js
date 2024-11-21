@@ -111,12 +111,6 @@ class DHL {
     };
 
     uploadImage(docRequest, shipmentId){
-
-        const myHeaders = new Headers();
-        myHeaders.append("content-type", "application/json");
-        myHeaders.append("x-version", "2.12.0");
-        myHeaders.append("Authorization", "Basic ZGVtby1rZXk6ZGVtby1zZWNyZXQ=");
-
         const raw = JSON.stringify(docRequest);        
         const url = `${this.restUrl}/shipments/${shipmentId}/upload-image`;
         const config = {
