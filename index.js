@@ -1,6 +1,7 @@
 const soap = require("soap");
 const xmlFormat = require("xml-formatter");
 const countryData = require("country-data");
+const axios = require("axios");
 
 
 const liveUrlPrefix = 'https://wsbexpress.dhl.com/gbl';
@@ -8,11 +9,17 @@ const testUrlPrefix = 'https://wsbexpress.dhl.com/sndpt';
 const liveExpressRateBookUrl = `${liveUrlPrefix}/expressRateBook?WSDL`;
 const testExpressRateBookUrl = `${testUrlPrefix}/expressRateBook?WSDL`;
 
+const restUrl = {
+    test: "https://express.api.dhl.com/mydhlapi/test",
+    production: "https://express.api.dhl.com/mydhlapi"
+}
+
 class DHL {
 
-    constructor(auth, debug){
+    constructor(auth, debug, environment){
         this.auth = auth;
         this.debug = debug;
+        this.restUrl = restUrl[environment];
     }
 
     wsdlRequest(wsdlUrl, method, req) {
@@ -38,7 +45,8 @@ class DHL {
                 if (method === 'PickUpRequest') {
                     clientMethod = clientMethod.euExpressRateBook_providerServices_PickUpRequest_Port.PickUpRequest;
                 }
-    
+
+                
                 clientMethod(req, (err, response) => {
                     const requestXml = xmlFormat(client.lastRequest).replace(this.auth.password, '**********');
                     if (err) {
@@ -69,6 +77,11 @@ class DHL {
     trackingRequest(req) {
         return this.wsdlRequest(`${(this.debug ? testUrlPrefix : liveUrlPrefix)}/glDHLExpressTrack?WSDL`, 'trackShipmentRequest', req);
     };
+
+    documentImageRequest(req) {
+        return this.wsdlRequest(`${(this.debug ? testUrlPrefix: liveUrlPrefix)}/documentImageRequest?WSDL`, 'DocumentImageRequest', req);
+    };
+    
     
     getIsoDateTime() {
         return (new Date).toISOString();
@@ -96,6 +109,29 @@ class DHL {
         }
         return countryData.lookup.countries({name: country})[0].alpha2;
     };
+
+    uploadImage(docRequest, shipmentId){
+
+        const myHeaders = new Headers();
+        myHeaders.append("content-type", "application/json");
+        myHeaders.append("x-version", "2.12.0");
+        myHeaders.append("Authorization", "Basic ZGVtby1rZXk6ZGVtby1zZWNyZXQ=");
+
+        const raw = JSON.stringify(docRequest);        
+        const url = `${this.restUrl}/shipments/${shipmentId}/upload-image`;
+        const config = {
+            headers: {
+                "content-type": "application/json",
+                "x-version": "2.12.0"
+            },
+            auth: {
+                username: this.auth.username,
+                password: this.auth.password
+            }
+        }
+        
+        return axios.patch(url, docRequest, config);
+    }
     
 }
 

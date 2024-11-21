@@ -240,6 +240,26 @@ dhl.requestPickup(reqPickup).then((resPickup) => {
 
 });
 
+const docRequest = {
+    originalPlannedShippingDate: "2024-11-22",
+    accounts: [{
+            typeCode: "shipper",
+            number: auth.accountNumber.toString()
+    }],
+    productCode: "I",
+    documentImages: [{
+        "typeCode": "INV",
+        "imageFormat": "PDF",
+        "content": "base64string"
+    }]
+}
+
+dhl.uploadImage(docRequest, "trackingId").then((result) => {
+    console.log("result", result.data);
+}).catch((err) => {
+    console.log("err", err.response.data);
+})
+
 ```
 
 ## Credits
