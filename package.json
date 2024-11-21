@@ -1,6 +1,6 @@
 {
   "name": "@kronsi/dhl",
-  "version": "2.1.8",
+  "version": "2.1.9",
   "description": "A library for using the DHL Express API",
   "main": "./index.js",
   "private": false,
@@ -30,6 +30,6 @@
     "axios": "^1.7.7",
     "country-data": "0.0.31",
     "soap": "^0.29.0",
-    "xml-formatter": "^1.1.0"
+    "xml-formatter": "^1.2.1"
   }
 }
